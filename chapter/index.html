@@ -27,8 +27,6 @@
   .halves .box{background:var(--navy2);border:1px solid var(--line);border-radius:14px;padding:20px}
   .halves h3{font-size:15px;color:var(--gold-lt);margin-bottom:12px}
   .halves .note{font-size:12px;color:var(--muted);margin-top:10px}
-  .unlock{background:var(--navy2);border:1px dashed var(--line);border-radius:12px;padding:16px 20px;
-    font-size:13.5px;color:var(--muted);margin-bottom:22px}
   .tl{list-style:none;position:relative;padding-left:26px}
   .tl:before{content:"";position:absolute;left:7px;top:6px;bottom:6px;width:2px;background:var(--navy3)}
   .tl li{position:relative;padding:0 0 24px 14px}
@@ -127,12 +125,13 @@ function renderScoreboard(g) {
     const cl = (s.cl_titles || []).find(r => r.name === name);
     return (rd ? rd.points : 0) + (cl ? cl.titles : 0);
   };
+  // Until the manager↔Sleeper-team mapping exists there's no combined table —
+  // hide the whole section rather than explain plumbing to the league.
   if (!g.current.combined) {
-    target.innerHTML = `<div class="unlock">🔓 The combined table unlocks once the commissioner links each manager
-      to their Sleeper team (a two-minute <code>goat_map.json</code> edit). Both halves of the race are already
-      live below — redraft points and titles just can't be added together by name yet.</div>`;
+    el("scoreboard").style.display = "none";
     return;
   }
+  el("scoreboard").style.display = "block";
   const currentSeason = Number(g.current.season) || g.chapter.start_season;
   const rows = g.current.combined.map(r => {
     const perSeason = seasonsSpan.map(season => {
@@ -204,6 +203,11 @@ async function refresh() {
     renderScoreboard(g);
     renderSeason(g);
     renderTimeline(g);
+    // keep visible section numbers contiguous while the scoreboard is hidden
+    [...document.querySelectorAll("section")]
+      .filter(s => getComputedStyle(s).display !== "none")
+      .forEach((s, i) => { const n = s.querySelector("h2 .num");
+                           if (n) n.textContent = String(i + 1).padStart(2, "0"); });
   } catch (e) {
     console.error(e);
     el("scoreboardBody").innerHTML = `<div class="empty">Couldn't reach the league server — retrying shortly.</div>`;
