@@ -11,8 +11,8 @@ and a five-year race for the G.O.A.T. title, live at
 - **[The League](https://bawseleague.com/league/)** — the group's 12-manager NFL
   redraft on Sleeper: standings, live matchups, the playoff race, rosters,
   power rankings.
-- **[Bawse G.O.A.T.](https://bawseleague.com/goat/)** — the 2026–2030 chapter
-  race combining both leagues. $300 / $200 / $100 when it closes.
+- **[Chapter Champion](https://bawseleague.com/chapter/)** — the 2026–2030 race
+  for Bawse Points across both leagues. $300 / $200 / $100 when it closes.
 - **[The pitch](https://bawseleague.com/about/)** — the page that talked the
   group into all of this, preserved.
 
@@ -29,7 +29,7 @@ public read-only JSON endpoints at `draft.bawseleague.com/api/public/*`.
 | Path | What it is |
 |---|---|
 | `index.html` | Home hub — live status, section cards, trophy calendar |
-| `champions/` `league/` `goat/` `about/` | The four pages above |
+| `champions/` `league/` `chapter/` `about/` | The four pages above (`goat/` is a redirect to `chapter/`) |
 | `assets/` | Shared styles, API helpers, and the ESPN team-logo map |
 | `dev/` | Generators: canonical 647-team dataset, logo-map builder, legacy doc builders |
 | `docs/` | Original launch-era pitch/rulebook/draft-board files (historical — the site's rules page is current) |

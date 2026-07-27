@@ -13,14 +13,14 @@ site, three live sections plus the archived pitch:
 | `/` (`index.html`) | **Home hub** — live status chips, three section cards, trophy calendar, in-season matchup band. |
 | `/champions/` | **Champions HQ** — the Champions League (11 real teams each across 7 sports, 12 managers): live draft board + pick feed, franchise pages (real version of the old mock), title race, still-alive counts, expected-shares board, payout ledger, corrected rules. |
 | `/league/` | **The League** — the group's 12-manager NFL redraft on Sleeper: standings (movement arrows once history accrues), weekly matchups with starter breakdowns, playoff race, manager rosters, transactions/trending/injuries, power rankings (auto-appears after 3 weeks). |
-| `/goat/` | **Bawse G.O.A.T.** — the five-year chapter race (2026–2030): combined scoreboard (unlocks via `goat_map.json`, see below), live season projection, chapter timeline. Pays $300/$200/$100. |
+| `/chapter/` | **Chapter Champion** (renamed from "Bawse G.O.A.T." July 27, 2026; points are **Bawse Points/BPs**) — the five-year chapter race (2026–2030): combined scoreboard (unlocks via `goat_map.json`, see below), live season projection, chapter timeline. Pays $300/$200/$100. `/goat/` is a redirect stub; the API endpoint and config files keep the internal `goat` name. |
 | `/about/` | The original launch-page pitch/explainer, preserved (draft demo, odds tables, FAQ). |
 
 **League facts (July 2026, current):** 12 managers. Champions League has **no
 trades, no All-Undrafted bundles, no shot rule** — rosters lock at the draft;
 the only in-season events are real-world eliminations/titles. Undrafted
-champions' shares roll into next season's pot. GOAT scoring: redraft final
-playoff finish = 12..1 points, each CL title = 1 point. Money: the CL has NO
+champions' shares roll into next season's pot. Chapter Champion scoring (in Bawse Points): redraft final
+playoff finish = 12..1 BPs, each CL title = 1 BP. Money: the CL has NO
 entry fee — $280/season from the group's accumulated pot, $40/share, all five
 chapter seasons funded; the main league has a $100 buy-in ($1,200 pool paying $660/$360/$180). The docx rulebooks in `docs/` predate all of this — the site's
 `/champions/#rules` section is the canonical ruleset.
@@ -71,8 +71,8 @@ the API go through `escapeHTML()`.
 
 ## Commissioner data hooks (live in the DRAFT ROOM repo, not here)
 
-- `config/goat_map.json` — manager name → Sleeper team name; unlocks the GOAT
-  combined scoreboard. `.example` file has all 12 names.
+- `config/goat_map.json` — manager name → Sleeper team name; unlocks the
+  Chapter Champion combined scoreboard. `.example` file has all 12 names.
 - `config/goat_seasons.json` — finalized past seasons, one entry per year.
 - CL season pot defaults to $280 server-side (`CL_SEASON_POT` env overrides) —
   dollar amounts appear on the site automatically.

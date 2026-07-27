@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Bawse League — Two leagues. Five years. One G.O.A.T.</title>
+<title>Bawse League — Two leagues. Five years. One Chapter Champion.</title>
 <link rel="stylesheet" href="/assets/style.css">
 <style>
   /* hub-specific: hero, section cards, trophy calendar, live bands */
@@ -50,14 +50,14 @@
   <a class="logo" href="/">BAWSE LEAGUE</a>
   <div class="navlinks">
     <a href="/champions/">🔴 Champions HQ</a><a href="/league/">🏈 The League</a>
-    <a href="/goat/">🐐 G.O.A.T.</a><a href="/about/">The pitch</a>
+    <a href="/chapter/">👑 Chapter Champ</a><a href="/about/">The pitch</a>
   </div>
 </div></nav>
 
 <header class="hub"><div class="wrap">
   <div class="kicker">Chapter one · 2026–2030</div>
   <h1>BAWSE <span class="gold">LEAGUE</span></h1>
-  <div class="tagline">Two leagues. Five years. One G.O.A.T.</div>
+  <div class="tagline">Two leagues. Five years. One Chapter Champion.</div>
   <div class="chips" id="chips"><div class="chip">Loading league status…</div></div>
 </div></header>
 
@@ -73,8 +73,8 @@
       <div class="desc">The main event — our 12-manager NFL redraft on Sleeper. September to the Super Bowl.</div>
       <span class="status" id="ffStatus">Loading…</span>
     </a>
-    <a class="hall" href="/goat/" id="hallGOAT">
-      <span class="go">→</span><div class="ico">🐐</div><h3>Bawse G.O.A.T.</h3>
+    <a class="hall" href="/chapter/" id="hallGOAT">
+      <span class="go">→</span><div class="ico">👑</div><h3>Chapter Champion</h3>
       <div class="desc">The five-year chapter race across both leagues. $300 / $200 / $100 when it closes.</div>
       <span class="status" id="goatStatus">Loading…</span>
     </a>
@@ -88,14 +88,14 @@
 
 <section id="calendar"><div class="wrap">
   <h2><span class="num">▮</span>The trophy calendar</h2>
-  <p class="sub">Seven championships between now and June — there's always one on the horizon. Each pays a Champions League share and banks a G.O.A.T. point.</p>
+  <p class="sub">Seven championships between now and June — there's always one on the horizon. Each pays a Champions League share and banks a Bawse Point.</p>
   <div class="trophies" id="trophies"></div>
 </div></section>
 
 <footer><div class="wrap">
   BAWSE LEAGUE · bawseleague.com · est. 2026<br>
   <span class="links"><a href="/champions/">Champions HQ</a> · <a href="/league/">The League</a> ·
-  <a href="/goat/">G.O.A.T.</a> · <a href="/about/">The pitch</a></span>
+  <a href="/chapter/">Chapter Champ</a> · <a href="/about/">The pitch</a></span>
 </div></footer>
 
 <script src="/assets/api.js"></script>
@@ -162,10 +162,10 @@ async function load() {
   if (goat) {
     if (goat.current.combined) {
       const top = goat.current.combined[0];
-      el("goatStatus").textContent = `Leader: ${top.name} · ${top.total} pts`;
+      el("goatStatus").textContent = `Leader: ${top.name} · ${top.total} BPs`;
     } else {
       const titles = (goat.current.cl_titles || []).reduce((a, c) => a + c.titles, 0);
-      el("goatStatus").textContent = `Season one underway · ${titles} of 95 chapter points banked`;
+      el("goatStatus").textContent = `Season one underway · ${titles} of 95 Bawse Points banked`;
     }
   } else el("goatStatus").textContent = "Temporarily unreachable.";
   renderTrophies(cl ? cl.titles : []);

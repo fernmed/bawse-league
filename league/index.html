@@ -67,20 +67,20 @@
   <a class="logo" href="/">BAWSE LEAGUE <small>· THE LEAGUE</small></a>
   <div class="navlinks">
     <a href="#standings">Standings</a><a href="#matchups">Matchups</a><a href="#race">Playoff race</a>
-    <a href="#managers">Managers</a><a href="#wire">The wire</a><a href="/champions/">Champions HQ</a><a href="/goat/">🐐 G.O.A.T.</a>
+    <a href="#managers">Managers</a><a href="#wire">The wire</a><a href="/champions/">Champions HQ</a><a href="/chapter/">👑 Chapter Champ</a>
   </div>
 </div></nav>
 
 <header class="page"><div class="wrap">
   <div class="kicker">The main event · NFL redraft on Sleeper</div>
   <h1>THE <span class="gold">LEAGUE</span></h1>
-  <div class="tagline" id="tagline">Twelve managers, one NFL season, and the redraft points that decide the Bawse G.O.A.T.</div>
+  <div class="tagline" id="tagline">Twelve managers, one NFL season, and the Bawse Points that decide the Chapter Champion.</div>
   <div class="statuschip" id="chip">Loading league…</div>
 </div></header>
 
 <section id="standings"><div class="wrap">
   <h2><span class="num">01</span>Standings</h2>
-  <p class="sub">Win the week, climb the table. Final playoff finish is what banks G.O.A.T. points (12 down to 1).</p>
+  <p class="sub">Win the week, climb the table. Final playoff finish is what banks Bawse Points (12 down to 1).</p>
   <div class="scrollbox"><table class="standings">
     <thead><tr><th>#</th><th>Team</th><th>W-L</th><th>PF</th><th>PA</th><th>Streak</th><th>Move</th></tr></thead>
     <tbody id="standingsBody"><tr><td colspan="7" class="skeleton">Loading…</td></tr></tbody>
@@ -203,7 +203,7 @@ function renderRace(d) {
   const s = d.settings || {};
   const spots = s.playoff_teams || 6, startWeek = s.playoff_week_start || 15;
   el("raceFormat").innerHTML = `<b>${spots}</b> of ${d.standings.length} make the playoffs · bracket starts
-    <b>week ${startWeek}</b> · seeding by record, points scored breaks ties · champion banks <b>12 G.O.A.T. points</b><br>
+    <b>week ${startWeek}</b> · seeding by record, points scored breaks ties · champion banks <b>12 Bawse Points</b><br>
     $100 buy-in, <b>$${(100 * d.standings.length).toLocaleString()}</b> pool — top three pay
     <b>$660</b> / <b>$360</b> / <b>$180</b>`;
   const played = d.standings.some(t => t.wins + t.losses + t.ties > 0);
