@@ -20,8 +20,9 @@ site, three live sections plus the archived pitch:
 trades, no All-Undrafted bundles, no shot rule** — rosters lock at the draft;
 the only in-season events are real-world eliminations/titles. Undrafted
 champions' shares roll into next season's pot. GOAT scoring: redraft final
-playoff finish = 12..1 points, each CL title = 1 point. CL entry fee not yet
-voted. The docx rulebooks in `docs/` predate all of this — the site's
+playoff finish = 12..1 points, each CL title = 1 point. Money: the CL has NO
+entry fee — $280/season from the group's accumulated pot, $40/share, all five
+chapter seasons funded; the main league has a $100 buy-in ($1,200 pool). The docx rulebooks in `docs/` predate all of this — the site's
 `/champions/#rules` section is the canonical ruleset.
 
 ## Architecture
@@ -73,8 +74,8 @@ the API go through `escapeHTML()`.
 - `config/goat_map.json` — manager name → Sleeper team name; unlocks the GOAT
   combined scoreboard. `.example` file has all 12 names.
 - `config/goat_seasons.json` — finalized past seasons, one entry per year.
-- `CL_ENTRY_FEE` env var on Render — turns share counts into dollars on
-  `/champions/` and `/goat/`.
+- CL season pot defaults to $280 server-side (`CL_SEASON_POT` env overrides) —
+  dollar amounts appear on the site automatically.
 - Eliminations/titles: commissioner Telegram commands `/eliminated`,
   `/champion`, `/revive` — the site reflects them within 5 minutes.
 

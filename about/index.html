@@ -280,11 +280,11 @@
 
 <section id="money"><div class="wrap">
   <h2><span class="num">06</span>The money & the calendar</h2>
-  <p class="sub">Seven equal shares, paid the night each champion is crowned. One manager can double- or triple-dip in a single year.</p>
+  <p class="sub">Seven equal $40 shares, paid the night each champion is crowned. One manager can double- or triple-dip in a single year — no entry fee, the pot has it covered.</p>
   <div class="calc">
-    <label style="font-size:14px;color:var(--muted)">Entry fee $ <input type="number" id="fee" value="50" min="0" step="5"></label>
-    <div class="out">Prize pool <b id="pool">$500</b></div>
-    <div class="out">Each championship pays <b id="share">$71.43</b></div>
+    <div class="out">Season pot <b>$280</b> — funded from the league pot built up over past seasons. No entry fees.</div>
+    <div class="out">Each championship pays <b>$40</b></div>
+    <div class="out">All five chapter seasons already funded.</div>
   </div>
   <div style="height:34px"></div>
   <ul class="tl">
@@ -465,15 +465,6 @@ function renderOdds(){
   });
 }
 renderOdds();
-
-// ---------- calculator ----------
-const fee=document.getElementById('fee');
-function calc(){
-  const f=Math.max(0,Number(fee.value)||0),pool=f*12;
-  document.getElementById('pool').textContent='$'+pool.toLocaleString();
-  document.getElementById('share').textContent='$'+(pool/7).toLocaleString(undefined,{maximumFractionDigits:2});
-}
-fee.addEventListener('input',calc);calc();
 
 render();
 </script>

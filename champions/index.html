@@ -289,11 +289,11 @@ function renderRace(d, c) {
 /* ---------- money ---------- */
 function renderMoney(d, c) {
   const pot = d.pot;
-  const potHtml = pot.entry_fee
-    ? `<div>Entry fee <b>${fmtMoney(pot.entry_fee)}</b></div>
-       <div>Prize pool <b>${fmtMoney(pot.entry_fee * c.managers.length)}</b></div>
-       <div>Each championship pays <b>${fmtMoney(pot.share_value)}</b></div>`
-    : `<div>Seven equal shares of the pot — one per championship. <span>Entry fee not locked yet; amounts appear here once it is.</span></div>`;
+  const potHtml = pot.share_value
+    ? `<div>Season pot <b>${fmtMoney(pot.season_pot)}</b> <span>— funded from the league pot, no entry fees</span></div>
+       <div>Each championship pays <b>${fmtMoney(pot.share_value)}</b></div>
+       <div><span>All five chapter seasons are already funded.</span></div>`
+    : `<div>Seven equal shares of the pot — one per championship.</div>`;
   el("potline").innerHTML = potHtml;
 
   // Expected shares: within each undecided league, normalize implied title odds
