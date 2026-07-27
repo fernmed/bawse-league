@@ -22,7 +22,7 @@ the only in-season events are real-world eliminations/titles. Undrafted
 champions' shares roll into next season's pot. GOAT scoring: redraft final
 playoff finish = 12..1 points, each CL title = 1 point. Money: the CL has NO
 entry fee — $280/season from the group's accumulated pot, $40/share, all five
-chapter seasons funded; the main league has a $100 buy-in ($1,200 pool). The docx rulebooks in `docs/` predate all of this — the site's
+chapter seasons funded; the main league has a $100 buy-in ($1,200 pool paying $660/$360/$180). The docx rulebooks in `docs/` predate all of this — the site's
 `/champions/#rules` section is the canonical ruleset.
 
 ## Architecture
