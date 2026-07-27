@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Champions League — Bawse League</title>
+<link rel="stylesheet" href="/assets/style.css">
+<style>
+  /* page-specific styles: live banner, draft board, feed, race cards, payout bars */
+  .livebanner{display:flex;align-items:center;gap:18px;flex-wrap:wrap;background:var(--navy2);
+    border:1px solid var(--gold);border-radius:14px;padding:18px 22px;margin-bottom:22px}
+  .livedot{width:10px;height:10px;border-radius:50%;background:var(--red);flex-shrink:0;animation:blink 1.4s infinite}
+  .livebanner.done .livedot{background:var(--green);animation:none}
+  .livebanner.idle .livedot{background:var(--muted);animation:none}
+  @keyframes blink{0%,100%{opacity:1}50%{opacity:.25}}
+  .livebanner b.big{font-size:19px}
+  .livebanner .sep{color:var(--muted)}
+  .livebanner .upd{margin-left:auto;font-size:11.5px;color:var(--muted)}
+  .board{display:grid;gap:4px;font-size:11.5px}
+  .bhead{color:var(--gold-lt);font-weight:800;font-size:11px;letter-spacing:.04em;text-align:center;
+    padding:6px 2px;background:var(--navy3);border-radius:6px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .rlabel{color:var(--muted);font-size:10.5px;display:flex;align-items:center;justify-content:center}
+  .bcell{background:var(--navy2);border:1px solid var(--line);border-radius:8px;padding:5px 7px;min-height:50px;line-height:1.25}
+  .bcell b{display:block;font-size:11.5px;font-weight:700}
+  .bcell small{color:var(--muted);font-size:9.5px}
+  .bcell.empty{background:transparent;border-style:dashed;opacity:.45}
+  .bcell.skip{opacity:.45;font-style:italic}
+  .bcell.onclock{border-color:var(--gold);box-shadow:0 0 0 1px var(--gold);animation:glowp 1.6s infinite}
+  @keyframes glowp{0%,100%{box-shadow:0 0 0 1px var(--gold)}50%{box-shadow:0 0 10px 1px var(--gold)}}
+  .feed{list-style:none;max-width:760px}
+  .feed li{display:flex;align-items:center;gap:12px;padding:9px 4px;border-bottom:1px solid var(--line);font-size:14px}
+  .feed .pnum{color:var(--muted);font-size:11.5px;min-width:44px}
+  .feed .who{color:var(--muted);font-size:12.5px;margin-left:auto;white-space:nowrap}
+  .jump{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:22px}
+  .jump a{background:var(--navy2);border:1px solid var(--line);border-radius:20px;padding:6px 14px;
+    font-size:12.5px;font-weight:700;color:var(--ink)}
+  .jump a:hover{border-color:var(--gold)}
+  .race{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px}
+  .race .card h3{display:flex;align-items:center;gap:10px;font-size:16px;margin-bottom:2px}
+  .race .card .champline{color:var(--muted);font-size:12px;margin-bottom:12px}
+  .race .fav{display:flex;align-items:center;gap:8px;font-size:13px;padding:6px 0;border-bottom:1px solid var(--line)}
+  .race .fav:last-child{border-bottom:0}
+  .race .fav .odds{color:var(--gold-lt);font-weight:700;font-size:12px;min-width:52px}
+  .race .fav .own{color:var(--muted);font-size:11.5px;margin-left:auto}
+  .race .crowned{background:rgba(212,160,23,.12);border:1px solid var(--gold);border-radius:10px;
+    padding:10px 12px;font-size:13.5px;margin-top:6px}
+  .bars{max-width:760px}
+  .bar-row{display:flex;align-items:center;gap:12px;padding:7px 0}
+  .bar-row .nm{min-width:90px;font-size:13.5px;font-weight:700}
+  .bar-row .track{flex:1;background:var(--navy2);border-radius:6px;height:22px;overflow:hidden}
+  .bar-row .fill{height:100%;background:linear-gradient(90deg,var(--gold),var(--gold-lt));border-radius:6px;
+    min-width:2px;transition:width .6s ease}
+  .bar-row.field .fill{background:var(--navy3)}
+  .bar-row .val{min-width:88px;text-align:right;font-size:13px;color:var(--gold-lt);font-weight:700}
+  .potline{display:flex;gap:24px;flex-wrap:wrap;background:var(--navy2);border:1px solid var(--line);
+    border-radius:12px;padding:16px 20px;margin-bottom:24px;font-size:14px}
+  .potline b{color:var(--gold)}
+  .potline span{color:var(--muted)}
+</style>
+</head>
+<body>
+
+<nav><div class="wrap">
+  <a class="logo" href="/">BAWSE LEAGUE <small>· CHAMPIONS HQ</small></a>
+  <div class="navlinks">
+    <a href="#draft">Draft</a><a href="#franchises">Franchises</a><a href="#titlerace">Title race</a>
+    <a href="#payouts">Payouts</a><a href="#rules">Rules</a>
+  </div>
+</div></nav>
+
+<header class="page"><div class="wrap">
+  <div class="kicker">Season One · 2026–27</div>
+  <h1>CHAMPIONS <span class="gold">LEAGUE</span></h1>
+  <div class="tagline">Twelve managers. Eleven real teams each, from seven sports. Seven championships pay.
+    Rosters lock at the draft — from there it's pure rooting.</div>
+</div></header>
+
+<section id="draft"><div class="wrap">
+  <h2><span class="num">01</span>The draft</h2>
+  <div id="liveBanner" class="livebanner"><div class="livedot"></div><div class="skeleton">Loading the board…</div></div>
+  <div class="tabs">
+    <button class="tab on" id="viewBoard">Board</button>
+    <button class="tab" id="viewFeed">Pick feed</button>
+  </div>
+  <div class="scrollbox" id="boardWrap"><div class="board" id="board"></div></div>
+  <ul class="feed" id="feed" style="display:none"></ul>
+</div></section>
+
+<section id="franchises"><div class="wrap">
+  <h2><span class="num">02</span>The franchises</h2>
+  <p class="sub">Every manager's portfolio, live — the real version of the page we mocked before launch.</p>
+  <div class="jump" id="jump"></div>
+  <div id="owners"><div class="skeleton">Loading franchises…</div></div>
+</div></section>
+
+<section id="titlerace"><div class="wrap">
+  <h2><span class="num">03</span>The title race</h2>
+  <p class="sub">Seven championships, seven paydays. Favorites shown from championship futures odds among teams still alive.</p>
+  <div class="race" id="race"></div>
+</div></section>
+
+<section id="payouts"><div class="wrap">
+  <h2><span class="num">04</span>The money</h2>
+  <div class="potline" id="potline"></div>
+  <h4 style="font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold-lt);margin:0 0 6px">Expected shares — if the favorites hold</h4>
+  <p class="sub" id="evNote" style="margin-bottom:14px;font-size:13px"></p>
+  <div class="bars" id="bars"></div>
+  <div style="height:26px"></div>
+  <div class="ledger">
+    <div class="box"><h4 style="font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold-lt);margin:0 0 10px">💰 Payout ledger</h4><ul id="ledgerList"></ul></div>
+    <div class="box"><h4 style="font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold-lt);margin:0 0 10px">📜 Activity</h4><ul id="activityList"></ul></div>
+  </div>
+</div></section>
+
+<section id="rules"><div class="wrap">
+  <h2><span class="num">05</span>The rules, short version</h2>
+  <p class="sub">Season-one ruleset — simplified by league vote in July 2026. This page is the current word; it supersedes the old rulebook docs.</p>
+  <div class="cards" style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px">
+    <div class="card"><div class="ico">🐍</div><h3 style="margin:10px 0 6px;font-size:17px;color:var(--gold-lt)">One draft, then done</h3><p style="font-size:14px;color:var(--muted)">12 managers × 11 rounds = 132 picks from 647 teams. Rosters lock when the draft ends — no trades, no waivers, no pickups, nothing.</p></div>
+    <div class="card"><div class="ico">🏆</div><h3 style="margin:10px 0 6px;font-size:17px;color:var(--gold-lt)">Seven trophies pay</h3><p style="font-size:14px;color:var(--muted)">The pot splits into 7 equal shares — World Series, NBA Finals, Stanley Cup, Super Bowl, CFP title, March Madness, Premier League. Own the champion, collect the share.</p></div>
+    <div class="card"><div class="ico">🔁</div><h3 style="margin:10px 0 6px;font-size:17px;color:var(--gold-lt)">Unowned champions roll over</h3><p style="font-size:14px;color:var(--muted)">Undrafted teams stay unowned. If one wins its title (hello, March Madness), that share rolls into next season's pot.</p></div>
+    <div class="card"><div class="ico">⏰</div><h3 style="margin:10px 0 6px;font-size:17px;color:var(--gold-lt)">Skips are forever</h3><p style="font-size:14px;color:var(--muted)">Miss your pick clock on draft night and the draft moves on — you finish with one fewer team. The board remembers.</p></div>
+    <div class="card"><div class="ico">📅</div><h3 style="margin:10px 0 6px;font-size:17px;color:var(--gold-lt)">The league year</h3><p style="font-size:14px;color:var(--muted)">Draft night to the last trophy in June. There's a live championship race in every month of the season.</p></div>
+    <div class="card"><div class="ico">🐐</div><h3 style="margin:10px 0 6px;font-size:17px;color:var(--gold-lt)">GOAT points</h3><p style="font-size:14px;color:var(--muted)">Every Champions League title is worth 1 point in the five-year Bawse G.O.A.T. chapter race, alongside your redraft finishes. $300/$200/$100 at chapter's end.</p></div>
+  </div>
+</div></section>
+
+<footer><div class="wrap">
+  BAWSE LEAGUE · Champions League · Season One 2026–27<br>
+  Format adapted from r/FFCommish (u/Beaushekai) · Data live from the league draft room
+</div></footer>
+
+<script src="/assets/api.js"></script>
+<script>
+const ROUNDS = 11;
+let DATA = null, pollTimer = null;
+
+const avInit = name => name.trim().split(/\s+/).slice(0, 2).map(w => w[0]).join("").toUpperCase();
+const el = id => document.getElementById(id);
+
+function derive(d) {
+  const managers = [...d.managers].sort((a, b) => a.draft_slot - b.draft_slot);
+  const teamById = Object.fromEntries(d.teams.map(t => [t.id, t]));
+  const picksByManager = {};
+  managers.forEach(m => picksByManager[m.id] = []);
+  d.picks.forEach(p => picksByManager[p.manager_id]?.push(p));
+  const total = managers.length * ROUNDS;
+  const n = managers.length;
+  let onClock = null;
+  if (d.draft_status === "live" && d.picks.length < total) {
+    const round = Math.floor(d.picks.length / n) + 1;
+    const idx = d.picks.length % n;
+    onClock = {round, manager: managers[round % 2 ? idx : n - 1 - idx], pick: d.picks.length + 1};
+  }
+  const decided = new Set(d.titles.map(t => t.league));
+  const titlesByManager = {};
+  d.titles.forEach(t => { if (t.manager_id) titlesByManager[t.manager_id] = (titlesByManager[t.manager_id] || 0) + 1; });
+  return {managers, teamById, picksByManager, total, onClock, decided, titlesByManager};
+}
+
+/* ---------- live banner ---------- */
+function renderBanner(d, c) {
+  const b = el("liveBanner");
+  const last = d.picks[d.picks.length - 1];
+  const lastLine = last ? `Last: <b>${escapeHTML(last.team_name)}</b> — ${escapeHTML(last.display_name)}` : "";
+  let cls = "livebanner", html = "";
+  if (d.draft_status === "live" && c.onClock) {
+    html = `<div><b class="big">🔴 LIVE — Pick ${c.onClock.pick} of ${c.total} · Round ${c.onClock.round}</b><br>
+      <b style="color:var(--gold-lt)">${escapeHTML(c.onClock.manager.display_name)}</b> is on the clock.
+      <span class="sep">·</span> ${lastLine}</div>`;
+  } else if (d.picks.length >= c.total) {
+    cls += " done";
+    html = `<div><b class="big">✅ Draft complete — ${c.total} picks in the books.</b><br>${lastLine}</div>`;
+  } else if (d.draft_status === "paused") {
+    cls += " idle";
+    html = `<div><b class="big">⏸ Draft paused at pick ${d.picks.length + 1} of ${c.total}.</b><br>${lastLine}</div>`;
+  } else {
+    cls += " idle";
+    html = `<div><b class="big">Draft night is coming.</b><br>The board fills in live, pick by pick, right here.</div>`;
+  }
+  b.className = cls;
+  b.innerHTML = `<div class="livedot"></div>${html}<div class="upd">updated ${new Date().toLocaleTimeString()}</div>`;
+}
+
+/* ---------- draft board + feed ---------- */
+function renderBoard(d, c) {
+  const board = el("board");
+  const n = c.managers.length;
+  board.style.gridTemplateColumns = `44px repeat(${n}, minmax(88px, 1fr))`;
+  el("boardWrap").style.minWidth = "0";
+  const cells = [`<div></div>`];
+  c.managers.forEach(m => cells.push(`<div class="bhead" title="${escapeHTML(m.display_name)}">${escapeHTML(m.display_name)}</div>`));
+  const byRoundManager = {};
+  d.picks.forEach(p => byRoundManager[p.round_number + ":" + p.manager_id] = p);
+  for (let r = 1; r <= ROUNDS; r++) {
+    cells.push(`<div class="rlabel">R${r}</div>`);
+    c.managers.forEach(m => {
+      const p = byRoundManager[r + ":" + m.id];
+      if (!p) {
+        const onclock = c.onClock && c.onClock.round === r && c.onClock.manager.id === m.id;
+        cells.push(`<div class="bcell empty${onclock ? " onclock" : ""}">${onclock ? "<b>⏱ on the clock</b>" : ""}</div>`);
+      } else if (!p.team_id) {
+        cells.push(`<div class="bcell skip"><b>Skipped</b><small>#${p.overall_pick}</small></div>`);
+      } else {
+        const color = `var(${LEAGUE_CSS[p.league] || "--gold"})`;
+        cells.push(`<div class="bcell" style="border-left:3px solid ${color}">
+          <b>${escapeHTML(p.team_name)}</b><small>${p.league} · #${p.overall_pick}</small></div>`);
+      }
+    });
+  }
+  board.innerHTML = cells.join("");
+}
+
+function renderFeed(d) {
+  const rowsHtml = [...d.picks].reverse().map(p => {
+    if (!p.team_id) return `<li><span class="pnum">#${p.overall_pick}</span><span class="tag" style="background:var(--navy3);color:var(--muted)">SKIP</span>
+      <span style="color:var(--muted);font-style:italic">Pick skipped</span><span class="who">${escapeHTML(p.display_name)} · ${timeAgo(p.made_at)}</span></li>`;
+    return `<li><span class="pnum">#${p.overall_pick}</span><span class="tag ${p.league}">${p.league}</span>
+      <b>${escapeHTML(p.team_name)}</b><span class="who">${escapeHTML(p.display_name)} · ${timeAgo(p.made_at)}</span></li>`;
+  });
+  el("feed").innerHTML = rowsHtml.join("") || `<div class="empty">No picks yet.</div>`;
+}
+
+/* ---------- franchises ---------- */
+function renderOwners(d, c) {
+  el("jump").innerHTML = c.managers.map(m =>
+    `<a href="#owner-${m.id}">${escapeHTML(m.display_name)}</a>`).join("");
+  const shareValue = d.pot.share_value;
+  el("owners").innerHTML = c.managers.map(m => {
+    const picks = c.picksByManager[m.id];
+    const teams = picks.filter(p => p.team_id).map(p => ({pick: p, team: c.teamById[p.team_id]}));
+    const alive = teams.filter(t => t.team.status === "alive").length;
+    const titles = c.titlesByManager[m.id] || 0;
+    const collected = shareValue ? fmtMoney(titles * shareValue) : titles + (titles === 1 ? " share" : " shares");
+    const cards = picks.map(p => {
+      if (!p.team_id) return `<div class="tcard out"><div class="tlogo"><div class="mono" style="background:var(--navy3);color:var(--muted)">—</div></div>
+        <div class="tinfo"><b>Skipped</b><small>Round ${p.round_number} · the board remembers</small></div>
+        <span class="status st-out">FORFEIT</span></div>`;
+      const t = c.teamById[p.team_id];
+      const st = t.status === "champion" ? ["champ", "st-champ", "CHAMPION 🏆"]
+               : t.status === "eliminated" ? ["out", "st-out", "OUT"] : ["", "st-alive", "ALIVE"];
+      return `<div class="tcard ${st[0]}"><div class="tlogo">${logoHTML(t.id, t.name, t.league)}</div>
+        <div class="tinfo"><b>${escapeHTML(t.name)}</b><small>${t.league} · R${p.round_number} #${p.overall_pick} · ${fmtOdds(t.odds)}</small></div>
+        <span class="status ${st[1]}">${st[2]}</span></div>`;
+    }).join("");
+    return `<div class="owner-shell" id="owner-${m.id}">
+      <div class="owner-head">
+        <div class="avatar">${escapeHTML(avInit(m.display_name))}</div>
+        <div class="owner-id"><h3>${escapeHTML(m.display_name)}</h3>
+          <p>Draft slot #${m.draft_slot}${m.is_commissioner ? " · Commissioner" : ""} · Season One</p></div>
+        <div class="owner-stats">
+          <div class="ostat"><b>${picks.length}/${ROUNDS}</b><span>Picks</span></div>
+          <div class="ostat"><b>${titles}</b><span>Titles</span></div>
+          <div class="ostat"><b>${collected}</b><span>Collected</span></div>
+          <div class="ostat"><b>${alive}</b><span>Still alive</span></div>
+        </div>
+      </div>
+      <div class="owner-body"><h4>Roster</h4>
+        <div class="team-grid">${cards || `<div class="empty">No picks yet — the draft will fill this in.</div>`}</div>
+      </div></div>`;
+  }).join("");
+}
+
+/* ---------- title race ---------- */
+function renderRace(d, c) {
+  el("race").innerHTML = LEAGUE_ORDER.map(lg => {
+    const teams = d.teams.filter(t => t.league === lg);
+    const owned = teams.filter(t => t.manager_id);
+    const alive = teams.filter(t => t.status !== "eliminated");
+    const title = d.titles.find(t => t.league === lg);
+    let body;
+    if (title) {
+      body = `<div class="crowned">🏆 <b>${escapeHTML(title.team_name)}</b> — ${
+        title.manager_name ? escapeHTML(title.manager_name) + " collects the share" : "undrafted; share rolls over"}</div>`;
+    } else {
+      const favs = alive.filter(t => typeof t.odds === "number" && t.status !== "champion")
+        .sort((a, b) => impliedProb(b.odds) - impliedProb(a.odds)).slice(0, 3);
+      body = favs.map(t => {
+        const owner = t.manager_id ? c.managers.find(m => m.id === t.manager_id) : null;
+        return `<div class="fav"><span class="odds">${fmtOdds(t.odds)}</span><b>${escapeHTML(t.name)}</b>
+          <span class="own">${owner ? escapeHTML(owner.display_name) : "undrafted"}</span></div>`;
+      }).join("") || `<div class="empty">No odds available.</div>`;
+    }
+    return `<div class="card"><h3><span class="tag ${lg}">${lg}</span> ${CHAMP[lg]}</h3>
+      <div class="champline">${alive.length} of ${teams.length} teams alive · ${owned.length} owned</div>${body}</div>`;
+  }).join("");
+}
+
+/* ---------- money ---------- */
+function renderMoney(d, c) {
+  const pot = d.pot;
+  const potHtml = pot.entry_fee
+    ? `<div>Entry fee <b>${fmtMoney(pot.entry_fee)}</b></div>
+       <div>Prize pool <b>${fmtMoney(pot.entry_fee * c.managers.length)}</b></div>
+       <div>Each championship pays <b>${fmtMoney(pot.share_value)}</b></div>`
+    : `<div>Seven equal shares of the pot — one per championship. <span>Entry fee not locked yet; amounts appear here once it is.</span></div>`;
+  el("potline").innerHTML = potHtml;
+
+  // Expected shares: within each undecided league, normalize implied title odds
+  // across ALIVE teams only; a manager's expected shares = sum of their teams'
+  // normalized chances. The undrafted field shows what might roll over.
+  const ev = {}, field = {ev: 0};
+  c.managers.forEach(m => ev[m.id] = 0);
+  LEAGUE_ORDER.filter(lg => !c.decided.has(lg)).forEach(lg => {
+    const alive = d.teams.filter(t => t.league === lg && t.status === "alive" && typeof t.odds === "number");
+    const totalProb = alive.reduce((s, t) => s + impliedProb(t.odds), 0);
+    if (!totalProb) return;
+    alive.forEach(t => {
+      const share = impliedProb(t.odds) / totalProb;
+      if (t.manager_id) ev[t.manager_id] += share; else field.ev += share;
+    });
+  });
+  const rowsData = c.managers.map(m => ({name: m.display_name, ev: ev[m.id], banked: c.titlesByManager[m.id] || 0}))
+    .map(r => ({...r, total: r.ev + r.banked}))
+    .sort((a, b) => b.total - a.total);
+  const max = Math.max(...rowsData.map(r => r.total), field.ev, 0.001);
+  const fmt = v => d.pot.share_value ? fmtMoney(v * d.pot.share_value) : v.toFixed(2) + " sh";
+  el("bars").innerHTML = rowsData.map(r =>
+    `<div class="bar-row"><span class="nm">${escapeHTML(r.name)}</span>
+      <div class="track"><div class="fill" style="width:${(r.total / max * 100).toFixed(1)}%"></div></div>
+      <span class="val">${fmt(r.total)}${r.banked ? " 🏆" : ""}</span></div>`).join("")
+    + `<div class="bar-row field"><span class="nm" style="color:var(--muted)">The field</span>
+      <div class="track"><div class="fill" style="width:${(field.ev / max * 100).toFixed(1)}%"></div></div>
+      <span class="val" style="color:var(--muted)">${fmt(field.ev)}</span></div>`;
+  el("evNote").textContent = (d.odds.source ? "Source: " + d.odds.source + ". " : "Odds: July 2026 futures snapshot. ")
+    + "Undrafted teams' chances accrue to \"the field\" — those shares would roll into next season's pot."
+    + (d.draft_status === "live" ? " Numbers shift live while the draft runs." : "");
+
+  el("ledgerList").innerHTML = (d.titles.length ? d.titles.map(t =>
+    `<li><span>🏆 ${escapeHTML(t.championship)} — ${escapeHTML(t.team_name)}</span>
+     <span class="${t.manager_name ? "amt" : "muted"}">${t.manager_name
+       ? escapeHTML(t.manager_name) + (d.pot.share_value ? " +" + fmtMoney(d.pot.share_value) : " +1 share")
+       : "rolls over"}</span></li>`).join("") : "")
+    + `<li><span class="muted">${7 - d.titles.length} championship${7 - d.titles.length === 1 ? "" : "s"} still in play</span><span class="muted">pending</span></li>`;
+
+  el("activityList").innerHTML = d.events.length ? [...d.events].reverse().slice(0, 12).map(e =>
+    `<li><span>${e.status === "champion" ? "🏆" : "☠️"} ${escapeHTML(e.name)} (${e.league}) ${e.status}</span>
+     <span class="muted">${timeAgo(e.changed_at)}</span></li>`).join("")
+    : `<li><span class="muted">Nothing yet — eliminations and titles land here as the seasons play out.</span></li>`;
+}
+
+/* ---------- orchestration ---------- */
+function renderAll() {
+  const d = DATA, c = derive(d);
+  renderBanner(d, c);
+  renderBoard(d, c);
+  renderFeed(d);
+  renderOwners(d, c);
+  renderRace(d, c);
+  renderMoney(d, c);
+}
+
+async function refresh() {
+  try {
+    DATA = await apiGet("/api/public/champions", {bust: true});
+    renderAll();
+  } catch (err) {
+    console.error(err);
+    if (!DATA) el("liveBanner").innerHTML = `<div class="livedot"></div>
+      <div>Couldn't reach the league server — retrying shortly.</div>`;
+  }
+  schedule();
+}
+
+function schedule() {
+  clearTimeout(pollTimer);
+  const live = DATA && DATA.draft_status === "live";
+  pollTimer = setTimeout(refresh, live ? 20000 : 300000);
+}
+
+document.addEventListener("visibilitychange", () => { if (!document.hidden) refresh(); });
+
+el("viewBoard").onclick = () => { el("viewBoard").classList.add("on"); el("viewFeed").classList.remove("on");
+  el("boardWrap").style.display = "block"; el("feed").style.display = "none"; };
+el("viewFeed").onclick = () => { el("viewFeed").classList.add("on"); el("viewBoard").classList.remove("on");
+  el("boardWrap").style.display = "none"; el("feed").style.display = "block"; };
+if (window.innerWidth < 700) el("viewFeed").onclick();
+
+loadLogos().then(refresh);
+</script>
+</body>
+</html>

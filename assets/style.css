@@ -1,0 +1,107 @@
+/* Bawse League — shared design system for the section pages
+   (/champions, /league, /goat). Tokens and components extracted from the
+   original one-page site so everything reads as one product. The root
+   index.html keeps its own inline copy; keep the two in sync on token changes. */
+
+:root{
+  --navy:#0b1d33; --navy2:#122a47; --navy3:#1a3a5f;
+  --gold:#d4a017; --gold-lt:#f0c65a;
+  --ink:#eef3fa; --muted:#9db2cc; --line:rgba(157,178,204,.18);
+  --green:#3ecf8e; --red:#ff6b6b;
+  /* per-sport accents (tags, monograms, board stripes) */
+  --c-mlb:#e05263; --c-nba:#f08c36; --c-nhl:#58b7e8; --c-nfl:#8da8ff;
+  --c-ncaaf:#3ecf8e; --c-ncaam:#b78bff; --c-epl:#ff7ab8;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--navy);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;line-height:1.6}
+a{color:var(--gold-lt);text-decoration:none}
+.wrap{max-width:1080px;margin:0 auto;padding:0 24px}
+
+/* NAV */
+nav{position:sticky;top:0;z-index:50;background:rgba(11,29,51,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+nav .wrap{display:flex;align-items:center;justify-content:space-between;height:58px;gap:14px}
+.logo{font-weight:800;letter-spacing:.12em;font-size:15px;color:var(--gold);white-space:nowrap}
+.logo small{color:var(--muted);font-weight:600;letter-spacing:.06em}
+.navlinks{display:flex;gap:18px;font-size:13.5px;overflow-x:auto}
+.navlinks a{color:var(--muted);font-weight:600;white-space:nowrap}
+.navlinks a:hover{color:var(--gold-lt)}
+@media(max-width:760px){.navlinks{gap:14px}}
+
+/* PAGE HEADER */
+header.page{padding:46px 0 30px;background:
+  radial-gradient(900px 320px at 50% -10%, rgba(212,160,23,.14), transparent 65%), var(--navy)}
+.kicker{color:var(--gold);letter-spacing:.28em;font-size:12px;font-weight:700;text-transform:uppercase}
+header.page h1{font-size:clamp(30px,5.5vw,52px);font-weight:900;letter-spacing:.02em;margin:8px 0 4px;line-height:1.05}
+header.page h1 .gold{color:var(--gold)}
+header.page .tagline{font-size:clamp(15px,2vw,18px);color:var(--muted);max-width:680px}
+
+/* SECTIONS */
+section{padding:56px 0;border-top:1px solid var(--line)}
+h2{font-size:clamp(24px,3.6vw,32px);font-weight:900;margin-bottom:8px}
+h2 .num{color:var(--gold);font-size:.6em;vertical-align:middle;letter-spacing:.2em;margin-right:10px}
+.sub{color:var(--muted);max-width:760px;margin-bottom:28px;font-size:16px}
+
+/* BUTTONS / TABS / PILLS */
+.btn{display:inline-block;padding:11px 22px;border-radius:8px;font-weight:700;font-size:14px;cursor:pointer;border:0}
+.btn-gold{background:var(--gold);color:#14100a}
+.btn-gold:hover{background:var(--gold-lt)}
+.btn-ghost{background:transparent;color:var(--ink);border:1px solid var(--line)}
+.btn-ghost:hover{border-color:var(--gold)}
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px}
+.tab{background:var(--navy2);border:1px solid var(--line);color:var(--muted);border-radius:8px;padding:8px 16px;font-weight:700;font-size:13px;cursor:pointer}
+.tab.on{background:var(--gold);color:#14100a;border-color:var(--gold)}
+.pill{font-size:11px;font-weight:700;padding:2px 9px;border-radius:20px;background:var(--navy3);color:var(--gold-lt);letter-spacing:.05em;white-space:nowrap}
+.tag{font-size:10px;font-weight:800;letter-spacing:.06em;padding:2px 8px;border-radius:12px;color:#0b1d33;white-space:nowrap}
+.tag.MLB{background:var(--c-mlb)} .tag.NBA{background:var(--c-nba)} .tag.NHL{background:var(--c-nhl)}
+.tag.NFL{background:var(--c-nfl)} .tag.NCAAF{background:var(--c-ncaaf)} .tag.NCAAM{background:var(--c-ncaam)}
+.tag.EPL{background:var(--c-epl)}
+
+/* CARDS + TABLES */
+.card{background:var(--navy2);border:1px solid var(--line);border-radius:12px;padding:22px}
+table{width:100%;border-collapse:collapse;font-size:13.5px}
+th{background:var(--navy3);color:var(--gold-lt);text-align:left;padding:9px 10px;font-size:12px;letter-spacing:.08em;text-transform:uppercase}
+td{padding:8px 10px;border-bottom:1px solid var(--line)}
+tr:nth-child(even) td{background:rgba(255,255,255,.02)}
+.scrollbox{overflow-x:auto;-webkit-overflow-scrolling:touch}
+
+/* FRANCHISE (owner) COMPONENTS — the real version of the launch-page mock */
+.owner-shell{position:relative;background:var(--navy2);border:1px solid var(--line);border-radius:16px;overflow:hidden;margin-bottom:22px}
+.owner-head{display:flex;align-items:center;gap:18px;padding:22px 24px;background:
+  linear-gradient(120deg, rgba(212,160,23,.18), transparent 60%), var(--navy3);flex-wrap:wrap}
+.avatar{width:56px;height:56px;border-radius:50%;background:var(--gold);color:#14100a;display:flex;align-items:center;justify-content:center;font-size:26px;font-weight:900;flex-shrink:0}
+.owner-id h3{font-size:21px;font-weight:900}
+.owner-id p{font-size:13px;color:var(--muted)}
+.owner-stats{display:flex;gap:10px;margin-left:auto;flex-wrap:wrap}
+.ostat{background:rgba(11,29,51,.6);border:1px solid var(--line);border-radius:10px;padding:9px 14px;text-align:center;min-width:84px}
+.ostat b{display:block;font-size:19px;color:var(--gold)}
+.ostat span{font-size:10.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.07em}
+.owner-body{padding:20px 24px}
+.owner-body h4{font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold-lt);margin:16px 0 12px}
+.owner-body h4:first-child{margin-top:0}
+.team-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(255px,1fr));gap:12px}
+.tcard{display:flex;align-items:center;gap:12px;background:var(--navy);border:1px solid var(--line);border-radius:12px;padding:12px 14px;position:relative}
+.tcard.champ{border-color:var(--gold);box-shadow:0 0 0 1px var(--gold), 0 6px 18px rgba(212,160,23,.15)}
+.tcard.out{opacity:.55}
+.tlogo{width:44px;height:44px;flex-shrink:0;display:flex;align-items:center;justify-content:center}
+.tlogo img{width:44px;height:44px;object-fit:contain}
+.mono{width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:13px;letter-spacing:.02em;color:#0b1d33}
+.tinfo{min-width:0;flex:1}
+.tinfo b{display:block;font-size:14px;line-height:1.25}
+.tinfo small{color:var(--muted);font-size:11.5px}
+.status{font-size:10px;font-weight:800;letter-spacing:.08em;padding:3px 8px;border-radius:14px;flex-shrink:0}
+.st-champ{background:var(--gold);color:#14100a}
+.st-alive{background:rgba(62,207,142,.15);color:var(--green);border:1px solid rgba(62,207,142,.4)}
+.st-out{background:rgba(255,255,255,.07);color:var(--muted)}
+.ledger{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:720px){.ledger{grid-template-columns:1fr}}
+.ledger .box{background:var(--navy);border:1px solid var(--line);border-radius:12px;padding:16px}
+.ledger .box li{list-style:none;font-size:13.5px;padding:7px 0;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;gap:10px}
+.ledger .box li:last-child{border-bottom:0}
+.ledger .amt{color:var(--green);font-weight:800}
+.ledger .muted{color:var(--muted)}
+
+/* MISC */
+.empty{color:var(--muted);font-style:italic;font-size:14px;padding:14px 4px}
+footer{padding:44px 0 60px;border-top:1px solid var(--line);text-align:center;color:var(--muted);font-size:13px}
+.skeleton{color:var(--muted);font-size:14px;padding:30px 0;text-align:center}
