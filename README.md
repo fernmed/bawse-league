@@ -1,58 +1,58 @@
 # Bawse League 🏆
 
-The official site for **Bawse League** — a championship league where 10 managers draft
-real teams across 7 sports (MLB, NBA, NHL, NFL, NCAA Football, NCAA Basketball, EPL)
-and win a share of the pot every time one of their teams wins a championship.
+The official site for **Bawse League** — one fantasy sports group, two leagues,
+and a five-year race for the G.O.A.T. title, live at
+**[bawseleague.com](https://bawseleague.com)**.
 
-Format adapted from a league shared on r/FFCommish. One draft a year. No lineups.
-No waivers. Seven payouts.
+- **[Champions HQ](https://bawseleague.com/champions/)** — the Champions League:
+  12 managers snake-draft 11 real teams each across 7 sports (MLB, NBA, NHL,
+  NFL, NCAA Football, NCAA Basketball, EPL); every championship pays a share of
+  the pot. Live draft board, franchise pages, title race, expected-shares board.
+- **[The League](https://bawseleague.com/league/)** — the group's 12-manager NFL
+  redraft on Sleeper: standings, live matchups, the playoff race, rosters,
+  power rankings.
+- **[Bawse G.O.A.T.](https://bawseleague.com/goat/)** — the 2026–2030 chapter
+  race combining both leagues. $300 / $200 / $100 when it closes.
+- **[The pitch](https://bawseleague.com/about/)** — the page that talked the
+  group into all of this, preserved.
 
-## What's in this repo
+Format adapted from a league shared on r/FFCommish. One draft a year. No
+lineups. No waivers. Seven payouts.
+
+## How it works
+
+Static site, **no build step, no dependencies** — every page is a
+self-contained HTML file sharing `assets/style.css` and `assets/api.js`. Live
+data comes from the league's draft-room server (a separate private repo) via
+public read-only JSON endpoints at `draft.bawseleague.com/api/public/*`.
 
 | Path | What it is |
 |---|---|
-| `index.html` | The entire site — one self-contained file (no build step, no dependencies) |
-| `docs/Bawse League - The Pitch.docx` | One-page pitch for the group |
-| `docs/Bawse League - Official Rulebook.docx` | Rulebook v1.0 (35 rules, ready for ratification) |
-| `docs/Bawse League - Draft Board.xlsx` | Draft-night tool: snake board, dropdowns, dup detection, live tracker, odds cheatsheet |
+| `index.html` | Home hub — live status, section cards, trophy calendar |
+| `champions/` `league/` `goat/` `about/` | The four pages above |
+| `assets/` | Shared styles, API helpers, and the ESPN team-logo map |
+| `dev/` | Generators: canonical 647-team dataset, logo-map builder, legacy doc builders |
+| `docs/` | Original launch-era pitch/rulebook/draft-board files (historical — the site's rules page is current) |
 
-## Deploy to GitHub Pages (~5 minutes)
+## Deploying
 
-1. Create a new **public** repo on GitHub (e.g. `bawse-league`).
-2. Upload everything in this folder: **Add file → Upload files** (or push with git, below).
-3. In the repo: **Settings → Pages → Build and deployment**, set Source to
-   **Deploy from a branch**, pick `main` and `/ (root)`, then Save.
-4. Wait a minute or two. The site is live at
-   `https://<your-username>.github.io/bawse-league/`.
-
-Pushing with git instead of the web uploader:
+Hosted on GitHub Pages with the custom domain `bawseleague.com` — **pushing to
+`main` deploys the site.** Never delete the `CNAME` file.
 
 ```bash
-cd bawse-league-site
-git init
-git add .
-git commit -m "Launch Bawse League site"
-git remote add origin https://github.com/<your-username>/bawse-league.git
-git push -u origin main
+git push origin main
 ```
 
-## Updating the site
+To refresh the team logo map after teams change:
 
-Edit or replace `index.html` and push (or re-upload). GitHub Pages redeploys
-automatically within a couple of minutes.
+```bash
+cd dev && python3 build_logos.py
+```
 
 ## Notes
 
-- Team logos hotlink from ESPN's public CDN. If one ever 404s, the card
-  automatically falls back to a color-matched monogram badge.
-- Odds shown are a July 2026 snapshot (sourced from public sportsbook futures) —
-  spot-check big movers the week of the draft.
-- The master team list is current for 2026–27 (incl. EPL promotion/relegation and
-  new FBS members). It needs a ~75-minute refresh each summer before the draft.
-
-## Roadmap
-
-- [ ] Live shared draft room (real-time picks from 10 devices)
-- [ ] Standings & payout ledger
-- [ ] Trade log
-- [ ] Side Pots: best ball companion leagues + season-long Bawse Cup leaderboard
+- Team logos hotlink from ESPN's public CDN; any 404 falls back automatically
+  to a color-matched monogram badge.
+- The master team list (`dev/teams_data.py`) is current for 2026–27 and needs a
+  ~75-minute refresh each July (renames, relocations, promotion/relegation,
+  FBS/D1 membership) — then regenerate `about/index.html` and `assets/logos.json`.
