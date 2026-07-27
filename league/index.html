@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The League — Bawse League</title>
+<link rel="stylesheet" href="/assets/style.css">
+<style>
+  /* page-specific: standings, matchup cards, playoff race, manager cards, wire */
+  .statuschip{display:inline-block;background:var(--navy2);border:1px solid var(--line);border-radius:20px;
+    padding:5px 14px;font-size:12.5px;font-weight:700;color:var(--muted);margin-top:14px}
+  .statuschip b{color:var(--gold-lt)}
+  .standings td b{font-size:14px}
+  .standings .tm{display:flex;align-items:center;gap:10px;min-width:0}
+  .sav{width:30px;height:30px;border-radius:50%;flex-shrink:0;object-fit:cover;background:var(--navy3)}
+  .sav.mono-av{display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:900;
+    color:#14100a;background:var(--gold)}
+  .mv{font-size:11.5px;font-weight:800;white-space:nowrap}
+  .mv.up{color:var(--green)} .mv.dn{color:var(--red)} .mv.flat{color:var(--muted)}
+  .stk.w{color:var(--green);font-weight:700} .stk.l{color:var(--red);font-weight:700}
+  .mcards{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:14px}
+  .mcard{background:var(--navy2);border:1px solid var(--line);border-radius:14px;overflow:hidden;cursor:pointer}
+  .mcard .row{display:flex;align-items:center;gap:10px;padding:14px 16px}
+  .mcard .row + .row{border-top:1px solid var(--line)}
+  .mcard .pts{margin-left:auto;font-weight:900;font-size:18px;color:var(--gold-lt)}
+  .mcard .row.win .pts{color:var(--gold)}
+  .mcard .nm{font-weight:700;font-size:14.5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .mcard .detail{display:none;border-top:1px solid var(--line);padding:12px 16px;
+    grid-template-columns:1fr 1fr;gap:0 18px}
+  .mcard.open .detail{display:grid}
+  .mcard .detail .pl{display:flex;justify-content:space-between;gap:8px;font-size:12px;padding:3px 0;
+    border-bottom:1px dashed var(--line)}
+  .mcard .detail .pl small{color:var(--muted)}
+  .mcard .hint{font-size:10.5px;color:var(--muted);text-align:center;padding:4px 0 8px}
+  .callout{display:flex;gap:14px;flex-wrap:wrap;margin-top:16px}
+  .callout .pillbox{background:var(--navy2);border:1px solid var(--line);border-radius:10px;
+    padding:8px 14px;font-size:12.5px;color:var(--muted)}
+  .callout .pillbox b{color:var(--gold-lt)}
+  .raceline{background:var(--navy2);border:1px solid var(--line);border-radius:12px;padding:16px 20px;
+    font-size:14px;margin-bottom:18px}
+  .raceline b{color:var(--gold)}
+  .seedzone td{background:rgba(212,160,23,.06)}
+  .mgr-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(255px,1fr));gap:12px}
+  .mgr{background:var(--navy2);border:1px solid var(--line);border-radius:12px;padding:14px 16px;cursor:pointer}
+  .mgr .head{display:flex;align-items:center;gap:12px}
+  .mgr .sav{width:42px;height:42px}
+  .mgr b{display:block;font-size:15px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .mgr small{color:var(--muted);font-size:12px}
+  .mgr .ros{display:none;margin-top:12px;border-top:1px solid var(--line);padding-top:10px}
+  .mgr.open .ros{display:block}
+  .mgr .ros h5{font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--gold-lt);margin:8px 0 4px}
+  .mgr .ros .pl{display:flex;justify-content:space-between;font-size:12px;padding:2px 0}
+  .mgr .ros .pl small{color:var(--muted)}
+  .mgr .ros .inj{color:var(--red);font-size:10px;font-weight:700}
+  .wire{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px}
+  .wire .box{background:var(--navy2);border:1px solid var(--line);border-radius:12px;padding:16px}
+  .wire h4{font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold-lt);margin-bottom:10px}
+  .wire li{list-style:none;font-size:13px;padding:6px 0;border-bottom:1px solid var(--line);
+    display:flex;justify-content:space-between;gap:10px}
+  .wire li:last-child{border-bottom:0}
+  .wire .n{color:var(--muted);font-size:12px;white-space:nowrap}
+</style>
+</head>
+<body>
+
+<nav><div class="wrap">
+  <a class="logo" href="/">BAWSE LEAGUE <small>· THE LEAGUE</small></a>
+  <div class="navlinks">
+    <a href="#standings">Standings</a><a href="#matchups">Matchups</a><a href="#race">Playoff race</a>
+    <a href="#managers">Managers</a><a href="#wire">The wire</a><a href="/champions/">Champions HQ</a>
+  </div>
+</div></nav>
+
+<header class="page"><div class="wrap">
+  <div class="kicker">The main event · NFL redraft on Sleeper</div>
+  <h1>THE <span class="gold">LEAGUE</span></h1>
+  <div class="tagline" id="tagline">Twelve managers, one NFL season, and the redraft points that decide the Bawse G.O.A.T.</div>
+  <div class="statuschip" id="chip">Loading league…</div>
+</div></header>
+
+<section id="standings"><div class="wrap">
+  <h2><span class="num">01</span>Standings</h2>
+  <p class="sub">Win the week, climb the table. Final playoff finish is what banks G.O.A.T. points (12 down to 1).</p>
+  <div class="scrollbox"><table class="standings">
+    <thead><tr><th>#</th><th>Team</th><th>W-L</th><th>PF</th><th>PA</th><th>Streak</th><th>Move</th></tr></thead>
+    <tbody id="standingsBody"><tr><td colspan="7" class="skeleton">Loading…</td></tr></tbody>
+  </table></div>
+</div></section>
+
+<section id="matchups"><div class="wrap">
+  <h2><span class="num">02</span><span id="weekTitle">This week</span></h2>
+  <p class="sub" id="matchupsSub">Tap a matchup for the starter-by-starter breakdown. Scores refresh every minute on gamedays.</p>
+  <div class="mcards" id="matchupCards"><div class="skeleton">Loading…</div></div>
+  <div class="callout" id="callouts"></div>
+</div></section>
+
+<section id="race"><div class="wrap">
+  <h2><span class="num">03</span>The playoff race</h2>
+  <div class="raceline" id="raceFormat">Loading…</div>
+  <div class="scrollbox" id="raceTableWrap"></div>
+</div></section>
+
+<section id="power" style="display:none"><div class="wrap">
+  <h2><span class="num">04</span>Power rankings</h2>
+  <p class="sub">All-play record: your score against every team, every week — no schedule luck. Form is the last three weeks.</p>
+  <div class="scrollbox"><table>
+    <thead><tr><th>#</th><th>Team</th><th>All-play</th><th>Form (3wk avg)</th><th>Actual</th></tr></thead>
+    <tbody id="powerBody"></tbody>
+  </table></div>
+</div></section>
+
+<section id="managers"><div class="wrap">
+  <h2><span class="num">05</span>The managers</h2>
+  <p class="sub">Tap a manager for their full roster.</p>
+  <div class="mgr-grid" id="mgrGrid"><div class="skeleton">Loading…</div></div>
+</div></section>
+
+<section id="wire"><div class="wrap">
+  <h2><span class="num">06</span>The wire</h2>
+  <div class="wire">
+    <div class="box"><h4>🔁 League moves</h4><ul id="txnList"></ul></div>
+    <div class="box"><h4>📈 NFL waiver buzz (24h)</h4><ul id="trendList"></ul></div>
+    <div class="box"><h4>🏥 Injury report</h4><ul id="injList"></ul></div>
+  </div>
+</div></section>
+
+<footer><div class="wrap">
+  BAWSE LEAGUE · The main league · Live from Sleeper<br>
+  Champions League HQ at <a href="/champions/">bawseleague.com/champions</a>
+</div></footer>
+
+<script src="/assets/api.js"></script>
+<script>
+let LEAGUE = null, BOARD = null, boardTimer = null, leagueTimer = null;
+const el = id => document.getElementById(id);
+const avatarHTML = (avatars, rosterId, name, size) => {
+  const a = (avatars || {})[String(rosterId)];
+  return a ? `<img class="sav" style="width:${size}px;height:${size}px" src="https://sleepercdn.com/avatars/thumbs/${escapeHTML(a)}" alt="" loading="lazy">`
+           : `<div class="sav mono-av" style="width:${size}px;height:${size}px">${escapeHTML(name.trim()[0] || "?").toUpperCase()}</div>`;
+};
+const fmt1 = n => (Math.round(n * 10) / 10).toLocaleString(undefined, {minimumFractionDigits: 1, maximumFractionDigits: 1});
+const recordOf = t => `${t.wins}-${t.losses}${t.ties ? "-" + t.ties : ""}`;
+
+/* previous-week standings order (by roster_id) from history, for rank movement */
+function movementMap(d) {
+  const weeks = Object.keys(d.history || {}).map(Number).sort((a, b) => b - a);
+  if (weeks.length < 2) return null;
+  const rank = rows => Object.fromEntries(rows.map((r, i) => [r.roster_id, i + 1]));
+  const cur = rank(d.history[weeks[0]].standings), prev = rank(d.history[weeks[1]].standings);
+  const map = {};
+  Object.keys(cur).forEach(id => { if (prev[id]) map[id] = prev[id] - cur[id]; });
+  return map;
+}
+
+function renderStandings(d) {
+  const mv = movementMap(d);
+  el("standingsBody").innerHTML = d.standings.map((t, i) => {
+    const delta = mv ? mv[t.roster_id] : null;
+    const move = delta == null ? `<span class="mv flat">–</span>`
+      : delta > 0 ? `<span class="mv up">▲${delta}</span>`
+      : delta < 0 ? `<span class="mv dn">▼${-delta}</span>` : `<span class="mv flat">·</span>`;
+    const stk = t.streak ? `<span class="stk ${t.streak.endsWith("W") ? "w" : "l"}">${escapeHTML(t.streak)}</span>` : "—";
+    return `<tr><td style="color:var(--muted)">${i + 1}</td>
+      <td><div class="tm">${avatarHTML(d.avatars, t.roster_id, t.name, 30)}<b>${escapeHTML(t.name)}</b></div></td>
+      <td>${recordOf(t)}</td><td>${fmt1(t.fpts)}</td><td>${fmt1(t.fpts_against)}</td>
+      <td>${stk}</td><td>${move}</td></tr>`;
+  }).join("");
+}
+
+function renderMatchups(d, b) {
+  el("weekTitle").textContent = d.season_type === "off" ? "The schedule" : `Week ${b?.week || d.week}`;
+  const cards = el("matchupCards");
+  if (!b || !b.ready || !b.matchups.length) {
+    cards.innerHTML = `<div class="empty">No matchups yet — the schedule lights up when the season kicks off in September.
+      Meanwhile, the <a href="/champions/">Champions League board</a> is very much alive.</div>`;
+    el("callouts").innerHTML = "";
+    return;
+  }
+  cards.innerHTML = b.matchups.map((m, i) => {
+    const rows = m.teams.map((t, ti) => `<div class="row${ti === 0 && t.points > 0 ? " win" : ""}">
+      ${avatarHTML(d.avatars, t.roster_id, t.name, 30)}<span class="nm">${escapeHTML(t.name)}</span>
+      <span class="pts">${fmt1(t.points)}</span></div>`).join("");
+    const detail = m.teams.map(t => `<div><div class="pl" style="border-bottom:1px solid var(--line)"><b style="font-size:11.5px">${escapeHTML(t.name)}</b></div>
+      ${(t.starters || []).map(s => `<div class="pl"><span>${escapeHTML(s[0])} <small>${escapeHTML([s[1], s[2]].filter(Boolean).join(" · "))}</small></span><span>${fmt1(s[3])}</span></div>`).join("")
+        || `<div class="pl"><small>No starters set</small></div>`}</div>`).join("");
+    return `<div class="mcard" onclick="this.classList.toggle('open')">${rows}
+      <div class="detail">${detail}</div><div class="hint">tap for starters</div></div>`;
+  }).join("");
+  const played = b.matchups.filter(m => m.teams.length === 2 && m.teams.some(t => t.points > 0));
+  if (played.length) {
+    const margin = m => Math.abs(m.teams[0].points - m.teams[1].points);
+    const closest = [...played].sort((a, c) => margin(a) - margin(c))[0];
+    const blowout = [...played].sort((a, c) => margin(c) - margin(a))[0];
+    const top = played.flatMap(m => m.teams).sort((a, c) => c.points - a.points)[0];
+    el("callouts").innerHTML =
+      `<div class="pillbox">🔥 Top score: <b>${escapeHTML(top.name)}</b> ${fmt1(top.points)}</div>
+       <div class="pillbox">😰 Closest: <b>${fmt1(margin(closest))}</b> — ${escapeHTML(closest.teams[0].name)} vs ${escapeHTML(closest.teams[1].name)}</div>
+       <div class="pillbox">🔨 Biggest gap: <b>${fmt1(margin(blowout))}</b> — ${escapeHTML(blowout.teams[0].name)} over ${escapeHTML(blowout.teams[1].name)}</div>`;
+  } else el("callouts").innerHTML = "";
+}
+
+function renderRace(d) {
+  const s = d.settings || {};
+  const spots = s.playoff_teams || 6, startWeek = s.playoff_week_start || 15;
+  el("raceFormat").innerHTML = `<b>${spots}</b> of ${d.standings.length} make the playoffs · bracket starts
+    <b>week ${startWeek}</b> · seeding by record, points scored breaks ties · champion banks <b>12 G.O.A.T. points</b>`;
+  const played = d.standings.some(t => t.wins + t.losses + t.ties > 0);
+  if (!played) {
+    el("raceTableWrap").innerHTML = `<div class="empty">Everyone's undefeated in July. Seeds, games back,
+      and clinch scenarios appear here once the games start.</div>`;
+    return;
+  }
+  const cut = d.standings[spots - 1];
+  const gb = t => ((cut.wins - t.wins) + (t.losses - cut.losses)) / 2;
+  el("raceTableWrap").innerHTML = `<table>
+    <thead><tr><th>Seed</th><th>Team</th><th>W-L</th><th>PF</th><th>Back</th></tr></thead><tbody>` +
+    d.standings.map((t, i) => `<tr class="${i < spots ? "seedzone" : ""}">
+      <td style="color:${i < spots ? "var(--gold)" : "var(--muted)"};font-weight:800">${i + 1}</td>
+      <td>${escapeHTML(t.name)}</td><td>${recordOf(t)}</td><td>${fmt1(t.fpts)}</td>
+      <td>${i < spots ? '<span style="color:var(--green);font-weight:700">in</span>' : fmt1(gb(t))}</td></tr>`).join("")
+    + "</tbody></table>";
+}
+
+function renderPower(d) {
+  const weeks = Object.keys(d.history || {}).map(Number).sort((a, b) => a - b);
+  if (weeks.length < 3) return;
+  const teams = {};
+  d.standings.forEach(t => teams[t.roster_id] = {name: t.name, ap: 0, games: 0, recent: []});
+  weeks.forEach(w => {
+    const scores = (d.history[w].matchups || []).flatMap(m => m.teams);
+    scores.forEach(t => {
+      const mine = teams[t.roster_id];
+      if (!mine) return;
+      mine.ap += scores.filter(o => o.roster_id !== t.roster_id && o.points < t.points).length;
+      mine.games += scores.length - 1;
+      mine.recent.push(t.points);
+    });
+  });
+  const rows = Object.entries(teams).map(([id, t]) => ({
+    id, name: t.name, pct: t.games ? t.ap / t.games : 0,
+    form: t.recent.slice(-3).reduce((a, c) => a + c, 0) / Math.max(1, Math.min(3, t.recent.length)),
+    actual: d.standings.find(s => s.roster_id == id),
+  })).sort((a, b) => (b.pct - a.pct) || (b.form - a.form));
+  el("powerBody").innerHTML = rows.map((r, i) => `<tr><td style="color:var(--muted)">${i + 1}</td>
+    <td><b>${escapeHTML(r.name)}</b></td><td>${(r.pct * 100).toFixed(1)}%</td>
+    <td>${fmt1(r.form)}</td><td>${r.actual ? recordOf(r.actual) : "—"}</td></tr>`).join("");
+  el("power").style.display = "block";
+}
+
+function renderManagers(d) {
+  el("mgrGrid").innerHTML = d.standings.map(t => {
+    const roster = (d.rosters || {})[String(t.roster_id)] || {starters: [], bench: []};
+    const section = (label, list) => list.length
+      ? `<h5>${label}</h5>` + list.map(p => `<div class="pl"><span>${escapeHTML(p[0])}
+          ${p[3] ? `<span class="inj">${escapeHTML(p[3])}</span>` : ""}</span>
+          <small>${escapeHTML([p[1], p[2]].filter(Boolean).join(" · "))}</small></div>`).join("")
+      : "";
+    const body = section("Starters", roster.starters || []) + section("Bench", roster.bench || []);
+    return `<div class="mgr" onclick="this.classList.toggle('open')">
+      <div class="head">${avatarHTML(d.avatars, t.roster_id, t.name, 42)}
+        <div style="min-width:0"><b>${escapeHTML(t.name)}</b>
+        <small>${recordOf(t)} · ${fmt1(t.fpts)} PF</small></div></div>
+      <div class="ros">${body || `<div class="empty" style="padding:6px 0">Roster fills in after the Sleeper draft.</div>`}</div>
+    </div>`;
+  }).join("");
+}
+
+function renderWire(d) {
+  el("txnList").innerHTML = (d.transactions || []).slice().reverse().map(t =>
+    `<li><span>${escapeHTML(t)}</span></li>`).join("")
+    || `<li><span class="n">No moves yet — waivers open with the season.</span></li>`;
+  const tr = d.trending || {};
+  el("trendList").innerHTML = [...(tr.add || []).map(([p, n]) => [p, n, "+"]),
+                               ...(tr.drop || []).map(([p, n]) => [p, n, "–"])]
+    .map(([p, n, s]) => `<li><span>${s === "+" ? "📥" : "📤"} ${escapeHTML(p)}</span>
+      <span class="n" style="color:${s === "+" ? "var(--green)" : "var(--red)"}">${s}${n.toLocaleString()}</span></li>`).join("")
+    || `<li><span class="n">Nothing trending right now.</span></li>`;
+  el("injList").innerHTML = (d.injuries || []).map(i => `<li><span>${escapeHTML(i)}</span></li>`).join("")
+    || `<li><span class="n">Clean bill of health — or no rosters yet.</span></li>`;
+}
+
+function renderAll() {
+  const d = LEAGUE;
+  el("chip").innerHTML = `<b>${escapeHTML(d.league)}</b> · ${escapeHTML(String(d.season))} ·
+    ${d.season_type === "off" ? "offseason" : d.season_type === "post" ? "playoffs" : "week " + d.week}`;
+  renderStandings(d);
+  renderMatchups(d, BOARD);
+  renderRace(d);
+  renderPower(d);
+  renderManagers(d);
+  renderWire(d);
+}
+
+async function refreshLeague() {
+  try {
+    const d = await apiGet("/api/public/league", {bust: true});
+    if (d.ready) { LEAGUE = d; renderAll(); }
+    else if (!LEAGUE) el("chip").textContent = d.configured ? "League data warming up — check back in a minute." : "League not linked yet.";
+  } catch (e) { console.error(e); }
+  clearTimeout(leagueTimer);
+  leagueTimer = setTimeout(refreshLeague, 300000);
+}
+
+async function refreshBoard() {
+  try {
+    const b = await apiGet("/api/public/league/scoreboard", {bust: true});
+    if (b.ready) { BOARD = b; if (LEAGUE) renderMatchups(LEAGUE, BOARD); }
+  } catch (e) { console.error(e); }
+  clearTimeout(boardTimer);
+  const gameday = LEAGUE && LEAGUE.season_type === "regular";
+  boardTimer = setTimeout(refreshBoard, gameday ? 60000 : 600000);
+}
+
+document.addEventListener("visibilitychange", () => { if (!document.hidden) { refreshLeague(); refreshBoard(); } });
+refreshLeague().then(refreshBoard);
+</script>
+</body>
+</html>
