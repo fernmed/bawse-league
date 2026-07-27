@@ -71,8 +71,9 @@ the API go through `escapeHTML()`.
 
 ## Commissioner data hooks (live in the DRAFT ROOM repo, not here)
 
-- `config/goat_map.json` — manager name → Sleeper team name; unlocks the
-  Chapter Champion combined scoreboard. `.example` file has all 12 names.
+- `config/goat_map.json` — manager name → Sleeper roster id (rename-proof;
+  team-name strings also accepted); unlocks the Chapter Champion combined
+  scoreboard. Filled July 27, 2026 for all 12 managers; new ids each August.
 - `config/goat_seasons.json` — finalized past seasons, one entry per year.
 - CL season pot defaults to $280 server-side (`CL_SEASON_POT` env overrides) —
   dollar amounts appear on the site automatically.
